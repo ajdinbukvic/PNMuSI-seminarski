@@ -1,16 +1,16 @@
-import { podaci, generisiHTML } from "./data.js";
+import { podaci } from "./data.js";
+import { ispisRezultata, generisiHTML, generisiTabelu } from "./helper.js";
+import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 
 const matrica = [];
 const vektor = [];
 
 // DROPDOWNS
 
-const nacinUnosaPodataka = document.getElementById("nacinUnosaPodataka");
 const nacinUnosaPodatakaSelect = document.getElementById(
   "nacinUnosaPodatakaSelect"
 );
 
-const odabirVrsteMetode = document.getElementById("odabirVrsteMetode");
 const odabirVrsteMetodeSelect = document.getElementById(
   "odabirVrsteMetodeSelect"
 );
@@ -63,6 +63,11 @@ const relaksacija = document.getElementById("relaksacija");
 const relaksacijaInput = document.getElementById("relaksacijaInput");
 const jednacine = document.getElementById("jednacine");
 const rijesiBtn = document.getElementById("rijesiBtn");
+const tabela = document.getElementById("tabela");
+const rjesenja = document.getElementById("rjesenja");
+const rjesenjaContainer = document.getElementById("rjesenjaContainer");
+const greska = document.getElementById("greska");
+const greskaContainer = document.getElementById("greskaContainer");
 
 // IIFE
 
@@ -75,6 +80,8 @@ const rijesiBtn = document.getElementById("rijesiBtn");
   preciznost.style.display = "none";
   maxIteracija.style.display = "none";
   relaksacija.style.display = "none";
+  greskaContainer.style.display = "none";
+  rjesenjaContainer.style.display = "none";
 })();
 
 // ODABIR NACINA UNOSA
@@ -376,51 +383,64 @@ const validirajUnose = () => {
 // POZIV ODABRANE METODE
 
 const metoda = (odabranaMetoda) => {
-  let rezultat;
+  let rezultati;
   switch (odabranaMetoda) {
     case "gaussovaMetoda":
-      rezultat = 12;
+      rezultati = 12;
       break;
     case "gaussJordanovaMetoda":
-      rezultat = 13;
+      rezultati = 13;
       break;
     case "matricnaMetoda":
-      rezultat = 14;
+      rezultati = 14;
       break;
     case "metodaFaktorizacije":
-      rezultat = 15;
+      rezultati = 15;
       break;
     case "jacobijevaMetoda":
-      rezultat = 16;
+      rezultati = jacobijevaMetoda(
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value
+      );
       break;
     case "gaussSeidelovaMetoda":
-      rezultat = 17;
+      rezultati = 17;
       break;
     case "jacobijevaMetodaRelaksacije":
-      rezultat = 18;
+      rezultati = 18;
       break;
     case "gaussSeidelovaMetodaRelaksacije":
-      rezultat = 19;
+      rezultati = 19;
       break;
   }
-  return rezultat;
+  if (rezultati[0].length > 1) {
+    generisiTabelu(tabela, rezultati);
+    return rezultati[rezultati.length - 1];
+  }
+  return rezultati;
 };
 
 // RJEŠAVANJE SISTEMA
 
 const rijesiSistem = () => {
   greska.innerHTML = "";
-  rjesenje.innerHTML = "";
+  rjesenja.innerHTML = "";
+  greskaContainer.style.display = "none";
+  rjesenjaContainer.style.display = "none";
   tabela.innerHTML = "";
   const odabranaMetoda = trenutnoOdabranaMetoda();
-  let rezultat;
+  let rezultati;
   try {
     postaviVrijednosti();
     validirajUnose();
-    rezultat = metoda(odabranaMetoda);
-    rjesenje.innerHTML = `RJESENJE: ${rezultat}`;
+    rezultati = metoda(odabranaMetoda);
+    rjesenja.innerHTML = `${ispisRezultata(rezultati)}`;
+    rjesenjaContainer.style.display = "block";
   } catch (err) {
-    greska.innerHTML = `GREŠKA: ${err.message}`;
+    greska.innerHTML = `${err.message}`;
+    greskaContainer.style.display = "block";
   }
 };
 

@@ -8,6 +8,20 @@
       rel="stylesheet"
       href="../bootstrap-5.3.2-dist/css/bootstrap.min.css"
     />
+    <style>
+      html,
+      body {
+        height: 50vh;
+      }
+      .container {
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+      }
+      main {
+        flex: 1;
+      }
+    </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -24,142 +38,194 @@
         </div>
       </div>
     </nav>
-    <div class="container mb-3 mt-3 w-50">
-      <div id="nacinUnosaPodataka">
-        <label class="form-label">Način unosa podataka:</label>
-        <select class="form-select" id="nacinUnosaPodatakaSelect">
-          <option selected value="1">Ručno unesi jednačine</option>
-          <option value="2">Zalijepi vrijednosti</option>
-          <option value="3">Učitaj iz datoteke</option>
-          <option value="4">Koristi testne podatke</option>
-        </select>
-      </div>
-      <div id="odabirVrsteMetode">
-        <label class="form-label">Odabir vrste metode:</label>
-        <select class="form-select" id="odabirVrsteMetodeSelect">
-          <option selected value="1">Direktne</option>
-          <option value="2">Iterativne</option>
-        </select>
-      </div>
-      <div id="odabirDirektneMetode">
-        <label class="form-label">Odabir metode:</label>
-        <select class="form-select" id="odabirDirektneMetodeSelect">
-          <option selected value="1" data-name="gaussovaMetoda">
-            Gaussova metoda
-          </option>
-          <option value="2" data-name="gaussJordanovaMetoda">
-            Gauss-Jordanova metoda
-          </option>
-          <option value="3" data-name="matricnaMetoda">Matrična metoda</option>
-          <option value="4" data-name="metodaFaktorizacije">
-            Metoda faktorizacije
-          </option>
-        </select>
-      </div>
-      <div id="odabirIterativneMetode">
-        <label class="form-label">Odabir metode:</label>
-        <select class="form-select" id="odabirIterativneMetodeSelect">
-          <option selected value="1" data-name="jacobijevaMetoda">
-            Jacobijeva metoda
-          </option>
-          <option value="2" data-name="gaussSeidelovaMetoda">
-            Gauss-Seidelova metoda
-          </option>
-          <option value="3">Metoda relaksacije</option>
-        </select>
-      </div>
-      <div id="odabirMetodeRelaksacije">
-        <label class="form-label">Odabir metode relaksacije:</label>
-        <select class="form-select" id="odabirMetodeRelaksacijeSelect">
-          <option selected value="1" data-name="jacobijevaMetodaRelaksacije">
-            Jacobijeva metoda relaksacije
-          </option>
-          <option value="2" data-name="gaussSeidelovaMetodaRelaksacije">
-            Gauss-Seidelova metoda relaksacije
-          </option>
-        </select>
-      </div>
-      <div class="mb-3" id="brojJednacina">
-        <label for="brojJednacinaInput" class="form-label"
-          >Broj jednačina:</label
-        >
-        <input
-          type="number"
-          class="form-control"
-          id="brojJednacinaInput"
-          placeholder=""
-        />
-      </div>
-      <div id="jednacine"></div>
-      <div class="mb-3" id="matricaKoeficijenata">
-        <label for="matricaKoeficijenataInput" class="form-label"
-          >Unos matrice koeficijenata</label
-        >
-        <textarea
-          class="form-control"
-          id="matricaKoeficijenataInput"
-          rows="6"
-        ></textarea>
-      </div>
-      <div class="mb-3" id="vektorRjesenja">
-        <label for="vektorRjesenjaInput" class="form-label"
-          >Unos vektora rješenja</label
-        >
-        <textarea
-          class="form-control"
-          id="vektorRjesenjaInput"
-          rows="3"
-        ></textarea>
-      </div>
-      <div class="mb-3" id="odabirDatoteke">
-        <label for="odabirDatotekeInput" class="form-label">Datoteka:</label>
-        <input
-          type="file"
-          class="form-control"
-          id="odabirDatotekeInput"
-          placeholder=""
-        />
-      </div>
-      <div class="mb-3" id="preciznost">
-        <label for="preciznostInput" class="form-label">Preciznost:</label>
-        <input
-          type="number"
-          class="form-control"
-          id="preciznostInput"
-          placeholder=""
-          value="1e-6"
-        />
-      </div>
-      <div class="mb-3" id="maxIteracija">
-        <label for="maxIteracijaInput" class="form-label"
-          >Maksimalan broj iteracija:</label
-        >
-        <input
-          type="number"
-          class="form-control"
-          id="maxIteracijaInput"
-          placeholder=""
-          value="100"
-        />
-      </div>
-      <div class="mb-3" id="relaksacija">
-        <label for="relaksacijaInput" class="form-label">Relaksacija:</label>
-        <input
-          type="number"
-          class="form-control"
-          id="relaksacijaInput"
-          placeholder=""
-        />
-      </div>
-      <button type="button" class="btn btn-success w-100 mt-4" id="rijesiBtn">
-        Riješi sistem
-      </button>
+    <div class="container mb-3 mt-3 w-75">
+      <main class="mb-auto">
+        <div class="container mb-3 mt-3 w-75">
+          <div id="nacinUnosaPodataka">
+            <label class="form-label">Način unosa podataka:</label>
+            <select class="form-select" id="nacinUnosaPodatakaSelect">
+              <option selected value="1">Ručno unesi jednačine</option>
+              <option value="2">Zalijepi vrijednosti</option>
+              <option value="3">Učitaj iz datoteke</option>
+              <option value="4">Koristi testne podatke</option>
+            </select>
+          </div>
+          <div id="odabirVrsteMetode">
+            <label class="form-label">Odabir vrste metode:</label>
+            <select class="form-select" id="odabirVrsteMetodeSelect">
+              <option selected value="1">Direktne</option>
+              <option value="2">Iterativne</option>
+            </select>
+          </div>
+          <div id="odabirDirektneMetode">
+            <label class="form-label">Odabir metode:</label>
+            <select class="form-select" id="odabirDirektneMetodeSelect">
+              <option selected value="1" data-name="gaussovaMetoda">
+                Gaussova metoda
+              </option>
+              <option value="2" data-name="gaussJordanovaMetoda">
+                Gauss-Jordanova metoda
+              </option>
+              <option value="3" data-name="matricnaMetoda">
+                Matrična metoda
+              </option>
+              <option value="4" data-name="metodaFaktorizacije">
+                Metoda faktorizacije
+              </option>
+            </select>
+          </div>
+          <div id="odabirIterativneMetode">
+            <label class="form-label">Odabir metode:</label>
+            <select class="form-select" id="odabirIterativneMetodeSelect">
+              <option selected value="1" data-name="jacobijevaMetoda">
+                Jacobijeva metoda
+              </option>
+              <option value="2" data-name="gaussSeidelovaMetoda">
+                Gauss-Seidelova metoda
+              </option>
+              <option value="3">Metoda relaksacije</option>
+            </select>
+          </div>
+          <div id="odabirMetodeRelaksacije">
+            <label class="form-label">Odabir metode relaksacije:</label>
+            <select class="form-select" id="odabirMetodeRelaksacijeSelect">
+              <option
+                selected
+                value="1"
+                data-name="jacobijevaMetodaRelaksacije"
+              >
+                Jacobijeva metoda relaksacije
+              </option>
+              <option value="2" data-name="gaussSeidelovaMetodaRelaksacije">
+                Gauss-Seidelova metoda relaksacije
+              </option>
+            </select>
+          </div>
+          <div class="mb-3" id="brojJednacina">
+            <label for="brojJednacinaInput" class="form-label"
+              >Broj jednačina:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="brojJednacinaInput"
+              placeholder=""
+            />
+          </div>
+          <div id="jednacine"></div>
+          <div class="mb-3" id="matricaKoeficijenata">
+            <label for="matricaKoeficijenataInput" class="form-label"
+              >Unos matrice koeficijenata</label
+            >
+            <textarea
+              class="form-control"
+              id="matricaKoeficijenataInput"
+              rows="6"
+            ></textarea>
+          </div>
+          <div class="mb-3" id="vektorRjesenja">
+            <label for="vektorRjesenjaInput" class="form-label"
+              >Unos vektora rješenja</label
+            >
+            <textarea
+              class="form-control"
+              id="vektorRjesenjaInput"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="mb-3" id="odabirDatoteke">
+            <label for="odabirDatotekeInput" class="form-label"
+              >Datoteka:</label
+            >
+            <input
+              type="file"
+              class="form-control"
+              id="odabirDatotekeInput"
+              placeholder=""
+            />
+          </div>
+          <div class="mb-3" id="preciznost">
+            <label for="preciznostInput" class="form-label">Preciznost:</label>
+            <input
+              type="number"
+              class="form-control"
+              id="preciznostInput"
+              placeholder=""
+              value="1e-6"
+            />
+          </div>
+          <div class="mb-3" id="maxIteracija">
+            <label for="maxIteracijaInput" class="form-label"
+              >Maksimalan broj iteracija:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="maxIteracijaInput"
+              placeholder=""
+              value="100"
+            />
+          </div>
+          <div class="mb-3" id="relaksacija">
+            <label for="relaksacijaInput" class="form-label"
+              >Relaksacija:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="relaksacijaInput"
+              placeholder=""
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-success w-100 mt-4"
+            id="rijesiBtn"
+          >
+            Riješi sistem
+          </button>
+          <div
+            id="rjesenjaContainer"
+            class="card text-white bg-primary mb-3 mt-3 mx-auto"
+            style="max-width: 18rem"
+          >
+            <div class="card-header text-center">RJEŠENJA</div>
+            <div class="card-body">
+              <p class="card-text" id="rjesenja"></p>
+            </div>
+          </div>
+          <div
+            id="greskaContainer"
+            class="card text-white bg-danger mb-3 mt-3 mx-auto"
+            style="max-width: 18rem"
+          >
+            <div class="card-header text-center">GREŠKA</div>
+            <div class="card-body">
+              <p class="card-text text-center" id="greska"></p>
+            </div>
+          </div>
+          <table class="table table-striped mb-3">
+            <tbody class="mb-3" id="tabela"></tbody>
+          </table>
+        </div>
+      </main>
     </div>
-    <h3 class="text-center" id="rjesenje"></h3>
-    <h3 class="text-center" id="greska"></h3>
-    <table class="table table-striped container">
-      <tbody id="tabela"></tbody>
-    </table>
+    <footer class="footer mt-auto bg-light">
+      <div class="text-center d-flex flex-column gap-3">
+        <span class="text-success mt-3 fw-bold"
+          >Univerzitet u Zenici | Politehnički fakultet</span
+        >
+        <span class="text-success fw-bold">
+          Softversko inženjerstvo | 1. godina | 2. ciklus
+        </span>
+        <span class="text-success fw-bold">
+          Primjena numeričkih metoda u softverskom inženjerstvu
+        </span>
+        <span class="text-success mb-3 fw-bold"
+          >Ajdin Bukvić | Lejla Bijedić | &copy; 2024</span
+        >
+      </div>
+    </footer>
     <script src="../bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
     <script type="module" src="../script/main.js"></script>
   </body>
