@@ -1,321 +1,427 @@
-const nacinUnosa = document.getElementsByName("nacinUnosa");
-const nacinUnosaForma = document.getElementById("nacinUnosaForma");
+import { podaci, generisiHTML } from "./data.js";
 
-const unosTastatura = document.getElementById("unosTastatura");
-const citanjeDatoteke = document.getElementById("citanjeDatoteke");
-const unosFunkcija = document.getElementById("unosFunkcija");
+const matrica = [];
+const vektor = [];
 
-const automatskoPopunjavanjeContainer = document.getElementById(
-  "automatskoPopunjavanjeContainer"
-);
-const automatskoPopunjavanje = document.getElementById(
-  "automatskoPopunjavanje"
+// DROPDOWNS
+
+const nacinUnosaPodataka = document.getElementById("nacinUnosaPodataka");
+const nacinUnosaPodatakaSelect = document.getElementById(
+  "nacinUnosaPodatakaSelect"
 );
 
-const brojPodataka = document.getElementById("brojPodataka");
-const tabelaPodaci = document.getElementById("tabelaPodaci");
-const xInput = document.getElementById("x");
-const fxInput = document.getElementById("fx");
+const odabirVrsteMetode = document.getElementById("odabirVrsteMetode");
+const odabirVrsteMetodeSelect = document.getElementById(
+  "odabirVrsteMetodeSelect"
+);
+
+const odabirDirektneMetode = document.getElementById("odabirDirektneMetode");
+const odabirDirektneMetodeSelect = document.getElementById(
+  "odabirDirektneMetodeSelect"
+);
+
+const odabirIterativneMetode = document.getElementById(
+  "odabirIterativneMetode"
+);
+const odabirIterativneMetodeSelect = document.getElementById(
+  "odabirIterativneMetodeSelect"
+);
+
+const odabirMetodeRelaksacije = document.getElementById(
+  "odabirMetodeRelaksacije"
+);
+const odabirMetodeRelaksacijeSelect = document.getElementById(
+  "odabirMetodeRelaksacijeSelect"
+);
+
+// RUCNI UNOS
+
+const brojJednacina = document.getElementById("brojJednacina");
+const brojJednacinaInput = document.getElementById("brojJednacinaInput");
+
+// UNOS MATRICE I VEKTORA
+
+const matricaKoeficijenata = document.getElementById("matricaKoeficijenata");
+const matricaKoeficijenataInput = document.getElementById(
+  "matricaKoeficijenataInput"
+);
+const vektorRjesenja = document.getElementById("vektorRjesenja");
+const vektorRjesenjaInput = document.getElementById("vektorRjesenjaInput");
+
+// CITANJE DATOTEKE
 
 const odabirDatoteke = document.getElementById("odabirDatoteke");
-const ucitanoPodataka = document.getElementById("ucitanoPodataka");
+const odabirDatotekeInput = document.getElementById("odabirDatotekeInput");
 
-const unosFunkcije = document.getElementById("unosFunkcije");
-const donjaGranica = document.getElementById("donjaGranica");
-const gornjaGranica = document.getElementById("gornjaGranica");
-const brojPodjela = document.getElementById("brojPodjela");
+// OSTALO
 
-const rjesenje = document.getElementById("rjesenje");
-const greska = document.getElementById("greska");
-const tabela = document.getElementById("tabela");
-const rijesiBtn = document.getElementById("rijesi");
-const inputi = document.querySelectorAll("input");
-const izborFormule = document.getElementsByName("izborFormule");
+const preciznost = document.getElementById("preciznost");
+const preciznostInput = document.getElementById("preciznostInput");
+const maxIteracija = document.getElementById("maxIteracija");
+const maxIteracijaInput = document.getElementById("maxIteracijaInput");
+const relaksacija = document.getElementById("relaksacija");
+const relaksacijaInput = document.getElementById("relaksacijaInput");
+const jednacine = document.getElementById("jednacine");
+const rijesiBtn = document.getElementById("rijesiBtn");
 
-const stranica = location.pathname
-  .split("/")
-  .filter((c) => c.length)
-  .pop();
+// IIFE
 
 (() => {
-  automatskoPopunjavanjeContainer.style.display = "none";
-  unosTastatura.style.display = "none";
-  citanjeDatoteke.style.display = "none";
-  unosFunkcija.style.display = "none";
+  odabirIterativneMetode.style.display = "none";
+  odabirMetodeRelaksacije.style.display = "none";
+  matricaKoeficijenata.style.display = "none";
+  vektorRjesenja.style.display = "none";
+  odabirDatoteke.style.display = "none";
+  preciznost.style.display = "none";
+  maxIteracija.style.display = "none";
+  relaksacija.style.display = "none";
 })();
 
-const generisiHTML = (id) => {
-  generisiTabelu(null, 0);
-  inputi.forEach((input) => (input.value = ""));
-  xInput.value = "x";
-  fxInput.value = "fx";
-  automatskoPopunjavanje.checked = false;
-  if (id == "tastatura") {
-    automatskoPopunjavanjeContainer.style.display = "block";
-    unosTastatura.style.display = "block";
-    citanjeDatoteke.style.display = "none";
-    unosFunkcija.style.display = "none";
-  } else if (id === "datoteka") {
-    citanjeDatoteke.style.display = "block";
-    automatskoPopunjavanjeContainer.style.display = "none";
-    unosTastatura.style.display = "none";
-    unosFunkcija.style.display = "none";
+// ODABIR NACINA UNOSA
+
+nacinUnosaPodatakaSelect.addEventListener("change", (e) =>
+  promijeniNacinUnosaPodataka(e.target.value)
+);
+
+const promijeniNacinUnosaPodataka = (value) => {
+  value = +value;
+  resetujInpute();
+  if (value === 1 || value === 4) {
+    brojJednacina.style.display = "block";
+    matricaKoeficijenata.style.display = "none";
+    vektorRjesenja.style.display = "none";
+    odabirDatoteke.style.display = "none";
+    brojJednacinaInput.disabled = false;
+  } else if (value === 2) {
+    brojJednacina.style.display = "none";
+    matricaKoeficijenata.style.display = "block";
+    vektorRjesenja.style.display = "block";
+    odabirDatoteke.style.display = "none";
+  } else if (value === 3) {
+    brojJednacina.style.display = "none";
+    matricaKoeficijenata.style.display = "none";
+    vektorRjesenja.style.display = "none";
+    odabirDatoteke.style.display = "block";
+  }
+  if (value === 4) promijeniPodatke();
+};
+
+// ODABIR VRSTE METODE
+
+odabirVrsteMetodeSelect.addEventListener("change", (e) =>
+  promijeniOdabirVrsteMetode(e.target.value)
+);
+
+const promijeniOdabirVrsteMetode = (value) => {
+  value = +value;
+  resetujInpute();
+  odabirDirektneMetodeSelect.selectedIndex = 0;
+  odabirIterativneMetodeSelect.selectedIndex = 0;
+  if (value === 1) {
+    odabirDirektneMetode.style.display = "block";
+    odabirIterativneMetode.style.display = "none";
+    odabirMetodeRelaksacije.style.display = "none";
+    preciznost.style.display = "none";
+    maxIteracija.style.display = "none";
+    relaksacija.style.display = "none";
   } else {
-    automatskoPopunjavanjeContainer.style.display = "block";
-    unosFunkcija.style.display = "block";
-    unosTastatura.style.display = "none";
-    citanjeDatoteke.style.display = "none";
+    odabirDirektneMetode.style.display = "none";
+    odabirIterativneMetode.style.display = "block";
+    odabirMetodeRelaksacije.style.display = "none";
+    preciznost.style.display = "block";
+    maxIteracija.style.display = "block";
+    relaksacija.style.display = "none";
   }
+  if (+nacinUnosaPodatakaSelect.value === 4) promijeniPodatke();
 };
 
-nacinUnosaForma.addEventListener("change", (e) => generisiHTML(e.target.id));
+// ODABIR DIREKTNE METODE
 
-const parametri = {
-  prviDrugi: {
-    tastatura: {
-      brojPodataka: 3,
-      xPodaci: [3.4, 3.5, 3.6],
-      fxPodaci: [0.294118, 0.285714, 0.277778],
-    },
-    funkcija: {
-      primjerFunkcije: (x) => Math.exp(x) * Math.log(x),
-      primjerFunkcijeStr: "f(x)=e^x*ln(x)",
-      donjaGranica: 1,
-      gornjaGranica: 5,
-      brojPodjela: 100,
-    },
-  },
-  treciCetvrti: {
-    tastatura: {
-      brojPodataka: 5,
-      xPodaci: [3.1, 3.3, 3.5, 3.7, 3.9],
-      fxPodaci: [0.32258065, 0.3030303, 0.28571429, 0.27027027, 0.25641026],
-    },
-    funkcija: {
-      primjerFunkcije: (x) => 1 / (x + Math.log(x)),
-      primjerFunkcijeStr: "y=1/(x+ln(x))",
-      donjaGranica: 1,
-      gornjaGranica: 4,
-      brojPodjela: 4,
-    },
-  },
+odabirDirektneMetodeSelect.addEventListener("change", (e) =>
+  promijeniOdabirDirektneMetode()
+);
+
+const promijeniOdabirDirektneMetode = () => {
+  resetujInpute();
+  if (+nacinUnosaPodatakaSelect.value === 4) promijeniPodatke();
 };
 
-const popuniParametre = () => {
-  let zadatak = "prviDrugi";
-  if (nacinUnosa[0].checked) {
-    brojPodataka.value = parametri[zadatak].tastatura.brojPodataka;
-    generisiTabelu(null, brojPodataka.value);
-    for (let i = 0; i < brojPodataka.value; i++) {
-      document.getElementById(`x-${i}`).value = Number.parseFloat(
-        parametri[zadatak].tastatura.xPodaci[i]
-      );
-      document.getElementById(`fx-${i}`).value = Number.parseFloat(
-        parametri[zadatak].tastatura.fxPodaci[i]
-      );
-    }
-  } else if (nacinUnosa[2].checked) {
-    unosFunkcije.value = parametri[zadatak].funkcija.primjerFunkcijeStr;
-    donjaGranica.value = parametri[zadatak].funkcija.donjaGranica;
-    gornjaGranica.value = parametri[zadatak].funkcija.gornjaGranica;
-    brojPodjela.value = parametri[zadatak].funkcija.brojPodjela;
+// ODABIR ITERATIVNE METODE
+
+odabirIterativneMetodeSelect.addEventListener("change", (e) =>
+  promijeniOdabirIterativneMetode(e.target.value)
+);
+
+const promijeniOdabirIterativneMetode = (value) => {
+  value = +value;
+  resetujInpute();
+  odabirMetodeRelaksacijeSelect.selectedIndex = 0;
+  if (value === 3) {
+    odabirMetodeRelaksacije.style.display = "block";
+    relaksacija.style.display = "block";
+  } else {
+    odabirMetodeRelaksacije.style.display = "none";
+    relaksacija.style.display = "none";
   }
+  if (+nacinUnosaPodatakaSelect.value === 4) promijeniPodatke();
 };
 
-const obrisiParametre = () => {
-  for (let i = 0; i < brojPodataka.value; i++) {
-    document.getElementById(`x-${i}`).value = "";
-    document.getElementById(`fx-${i}`).value = "";
-  }
-  brojPodataka.value = "";
-  tabelaPodaci.innerHTML = "";
-  unosFunkcije.value = "";
-  donjaGranica.value = "";
-  gornjaGranica.value = "";
-  brojPodjela.value = "";
-};
+// GENERISANJE JEDNACINA
 
-const promijeniParametre = (e) => {
-  if (e.currentTarget.checked) popuniParametre();
-  else obrisiParametre();
-};
-
-automatskoPopunjavanje.addEventListener("change", promijeniParametre);
-
-const generisiTabelu = (e, br) => {
+const generisiJednacine = (e, br) => {
   let brPodataka;
   if (!e) brPodataka = br;
   else brPodataka = e.target.value;
-  tabelaPodaci.innerHTML = "";
+  jednacine.innerHTML = generisiHTML(brPodataka);
+};
+
+brojJednacinaInput.addEventListener("input", generisiJednacine);
+
+// RESETOVANJE INPUTA
+
+const resetujInpute = () => {
+  jednacine.innerHTML = "";
+  brojJednacinaInput.value = "";
+  matricaKoeficijenataInput.value = "";
+  vektorRjesenjaInput.value = "";
+  // preciznostInput.value = "";
+  // maxIteracijaInput.value = "";
+  relaksacijaInput.value = "";
+};
+
+// TRENUTNO ODABRANA METODA
+
+const trenutnoOdabranaMetoda = () => {
+  let odabranaMetoda;
+  if (+odabirVrsteMetodeSelect.value === 1) {
+    odabranaMetoda =
+      odabirDirektneMetodeSelect.options[
+        odabirDirektneMetodeSelect.selectedIndex
+      ].dataset.name;
+  } else {
+    if (+odabirIterativneMetodeSelect.value === 3) {
+      odabranaMetoda =
+        odabirMetodeRelaksacijeSelect.options[
+          odabirMetodeRelaksacijeSelect.selectedIndex
+        ].dataset.name;
+    } else {
+      odabranaMetoda =
+        odabirIterativneMetodeSelect.options[
+          odabirIterativneMetodeSelect.selectedIndex
+        ].dataset.name;
+    }
+  }
+  return odabranaMetoda;
+};
+
+// POPUNJAVANJE TESTNIH PODATAKA
+
+const popuniPodatke = (odabranaMetoda, brPodataka) => {
   for (let i = 0; i < brPodataka; i++) {
-    tabelaPodaci.innerHTML += `
-      <div class="input-group mb-3 mt-3">
-        <input
-          type="number"
-          class="form-control"
-          placeholder=""
-          aria-label=""
-          aria-describedby="basic-addon1"
-          value=""
-          id="x-${i}"
-        />
-        <input
-          type="number"
-          class="form-control"
-          placeholder=""
-          aria-label=""
-          aria-describedby="basic-addon1"
-          value=""
-          id="fx-${i}"
-        />
-    </div>`;
-  }
-};
-
-brojPodataka.addEventListener("input", generisiTabelu);
-
-const podaciX = [];
-const podaciFX = [];
-
-const ucitajPodatke = (e) => {
-  const file = e.target.files[0];
-  podaciX.length = 0;
-  podaciFX.length = 0;
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const arrayBuffer = e.target.result;
-      const uint8Array = new Uint8Array(arrayBuffer);
-      const textData = new TextDecoder("utf-8").decode(uint8Array);
-      const lines = textData.split("\n");
-      const filteredLines = lines.filter((line) => line.trim() !== "");
-      filteredLines.forEach((line) => {
-        const values = line.split("\t");
-        podaciX.push(parseFloat(values[0]));
-        podaciFX.push(parseFloat(values[1]));
-      });
-      brojPodataka.value = ucitanoPodataka.value = filteredLines.length;
-    };
-    reader.readAsArrayBuffer(file);
-  }
-};
-
-odabirDatoteke.addEventListener("change", ucitajPodatke);
-
-const validirajUnose = (odabraniNacinUnosa) => {
-  if (odabraniNacinUnosa === "tastatura") {
-    podaciX.length = 0;
-    podaciFX.length = 0;
-    if (!brojPodataka.value || Number.parseInt(brojPodataka.value) <= 0)
-      return false;
-    for (let i = 0; i < brojPodataka.value; i++) {
-      if (
-        !document.getElementById(`x-${i}`).value ||
-        !document.getElementById(`fx-${i}`).value
-      ) {
-        return false;
-      }
-      podaciX.push(Number.parseFloat(document.getElementById(`x-${i}`).value));
-      podaciFX.push(
-        Number.parseFloat(document.getElementById(`fx-${i}`).value)
+    for (let j = 0; j < brPodataka; j++) {
+      document.getElementById(`x-${i}-${j}`).value = Number.parseFloat(
+        podaci[odabranaMetoda].matrica[i][j]
       );
     }
-  } else if (odabraniNacinUnosa === "datoteka") {
-    if (!odabirDatoteke.files.length) return false;
-  } else {
-    if (
-      !unosFunkcije.value ||
-      !donjaGranica.value ||
-      !gornjaGranica.value ||
-      !brojPodjela.value ||
-      Number.parseInt(brojPodjela.value) < 1
-    )
-      return false;
-    if (
-      Number.parseFloat(donjaGranica.value) >
-      Number.parseFloat(gornjaGranica.value)
-    )
-      return false;
+    document.getElementById(`y-${i}`).value = Number.parseFloat(
+      podaci[odabranaMetoda].vektor[i]
+    );
   }
-  return true;
+  if (podaci[odabranaMetoda].relaksacija)
+    relaksacijaInput.value = +podaci[odabranaMetoda].relaksacija;
 };
 
-const rijesi = () => {
+// PROMJENA TESTNIH PODATAKA
+
+const promijeniPodatke = () => {
+  resetujInpute();
+  const odabranaMetoda = trenutnoOdabranaMetoda();
+  brojJednacinaInput.value = podaci[odabranaMetoda].brojJednacina;
+  brojJednacinaInput.disabled = true;
+  generisiJednacine(null, +brojJednacinaInput.value);
+  popuniPodatke(odabranaMetoda, +brojJednacinaInput.value);
+};
+
+// UCITAVANJE PODATAKA IZ DATOTEKE
+
+const ucitajPodatke = (e) => {
+  matrica.length = 0;
+  vektor.length = 0;
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const csv = event.target.result;
+      const lines = csv.trim().split("\n");
+      lines.forEach((line) => {
+        const values = line.split(",");
+        const rowData = values.slice(0, -1).map(parseFloat);
+        const lastValue = parseFloat(values[values.length - 1]);
+        matrica.push(rowData);
+        vektor.push(lastValue);
+      });
+    };
+    reader.readAsText(file);
+  }
+};
+
+odabirDatotekeInput.addEventListener("change", ucitajPodatke);
+
+// POSTAVLJANJE VRIJEDNOSTI MATRICE I VEKTORA
+
+const postaviVrijednosti = () => {
+  if (+nacinUnosaPodatakaSelect.value !== 3) {
+    matrica.length = 0;
+    vektor.length = 0;
+  }
+  if (
+    +nacinUnosaPodatakaSelect.value === 1 ||
+    +nacinUnosaPodatakaSelect.value === 4
+  ) {
+    for (let i = 0; i < +brojJednacinaInput.value; i++) {
+      const temp = [];
+      for (let j = 0; j < +brojJednacinaInput.value; j++) {
+        const parsedValue = Number.parseFloat(
+          document.getElementById(`x-${i}-${j}`).value
+        );
+        if (!isNaN(parsedValue)) temp.push(parsedValue);
+        else
+          throw new Error(
+            "Vrijednosti koeficijenata nisu u ispravnom formatu."
+          );
+      }
+      matrica.push(temp);
+      const parsedResult = Number.parseFloat(
+        document.getElementById(`y-${i}`).value
+      );
+      if (!isNaN(parsedResult)) vektor.push(parsedResult);
+      else
+        throw new Error(
+          "Vrijednosti rezultata jednačine nisu u ispravnom formatu."
+        );
+    }
+  } else if (+nacinUnosaPodatakaSelect.value === 2) {
+    const matricaText = matricaKoeficijenataInput.value;
+    const matricaFilteredText = matricaText.trim().split("\n");
+    for (let i = 0; i < matricaFilteredText.length; i++) {
+      const row = matricaFilteredText[i].split(",");
+      const parsedRow = row.map((value) => {
+        const floatValue = Number.parseFloat(value);
+        if (!isNaN(floatValue)) return floatValue;
+        throw new Error(
+          "Podaci u matrici koeficijenata nisu u ispravnom formatu."
+        );
+      });
+      matrica.push(parsedRow);
+    }
+    const vektorText = vektorRjesenjaInput.value;
+    const vektorFilteredText = vektorText.trim().split(",");
+    const parsedVektor = vektorFilteredText.map((value) => {
+      const floatValue = Number.parseFloat(value);
+      if (!isNaN(floatValue)) vektor.push(floatValue);
+      else
+        throw new Error("Podaci u vektoru rješenja nisu u ispravnom formatu.");
+    });
+  }
+};
+
+// VALIDACIJA UNOSA
+
+const validirajUnose = () => {
+  if (
+    +nacinUnosaPodatakaSelect.value === 1 ||
+    +nacinUnosaPodatakaSelect.value === 4
+  ) {
+    if (!+brojJednacinaInput.value)
+      throw new Error("Morate unijeti broj jednačina.");
+    for (let i = 0; i < +brojJednacinaInput.value; i++) {
+      for (let j = 0; j < +brojJednacinaInput.value; j++) {
+        if (+!document.getElementById(`x-${i}-${j}`).value)
+          throw new Error(
+            "Morate unijeti sve vrijednosti koeficijenata (ako ne postoji unijeti 0)."
+          );
+      }
+      if (+!document.getElementById(`y-${i}`).value)
+        throw new Error("Morate unijeti sve vrijednosti rezultata jednačine.");
+    }
+  } else if (+nacinUnosaPodatakaSelect.value === 2) {
+    if (!matricaKoeficijenataInput.value)
+      throw new Error("Morate unijeti podatke u matrici koeficijenata.");
+    if (!vektorRjesenjaInput.value)
+      throw new Error("Morate unijeti vrijednost u vektoru rješenja.");
+  } else if (+nacinUnosaPodatakaSelect.value === 3) {
+    if (!odabirDatotekeInput.files.length)
+      throw new Error("Datoteka nije uspješno učitana.");
+  }
+  if (+odabirVrsteMetodeSelect.value === 2) {
+    if (+!preciznostInput.value) throw new Error("Morate unijeti preciznost.");
+    if (+!maxIteracijaInput.value)
+      throw new Error("Morate unijeti maksimalan broj iteracija.");
+  }
+  if (+odabirIterativneMetodeSelect.value === 3 && +!relaksacijaInput.value)
+    throw new Error("Morate unijeti vrijednost relaksacije.");
+  if (!matrica.length)
+    throw new Error("Podaci u matrici koeficijenata nisu uspješno učitani.");
+  if (!vektor.length)
+    throw new Error("Podaci u vektoru rješenja nisu uspješno učitani.");
+  if (matrica.length !== vektor.length)
+    throw new Error("Matrica i vektor moraju biti iste dužine.");
+  const firstRow = matrica[0].length;
+  for (let i = 1; i < matrica.length; i++) {
+    if (firstRow !== matrica[i].length)
+      throw new Error("Podaci u svakom redu matrice moraju biti iste dužine.");
+  }
+};
+
+// POZIV ODABRANE METODE
+
+const metoda = (odabranaMetoda) => {
+  let rezultat;
+  switch (odabranaMetoda) {
+    case "gaussovaMetoda":
+      rezultat = 12;
+      break;
+    case "gaussJordanovaMetoda":
+      rezultat = 13;
+      break;
+    case "matricnaMetoda":
+      rezultat = 14;
+      break;
+    case "metodaFaktorizacije":
+      rezultat = 15;
+      break;
+    case "jacobijevaMetoda":
+      rezultat = 16;
+      break;
+    case "gaussSeidelovaMetoda":
+      rezultat = 17;
+      break;
+    case "jacobijevaMetodaRelaksacije":
+      rezultat = 18;
+      break;
+    case "gaussSeidelovaMetodaRelaksacije":
+      rezultat = 19;
+      break;
+  }
+  return rezultat;
+};
+
+// RJEŠAVANJE SISTEMA
+
+const rijesiSistem = () => {
   greska.innerHTML = "";
   rjesenje.innerHTML = "";
   tabela.innerHTML = "";
-  if (
-    !nacinUnosa[0].checked &&
-    !nacinUnosa[1].checked &&
-    !nacinUnosa[2].checked
-  ) {
-    alert("Izaberite jedan od ponudjenih nacina unosa.");
-    return;
-  }
-  const odabranaFormula = Array.from(izborFormule).some(
-    (formula) => formula.checked
-  );
-  if (!odabranaFormula) {
-    alert("Izaberite jednu od ponudjenih formula.");
-    return;
-  }
-  const odabraniNacinUnosa = document.querySelector(
-    'input[name="nacinUnosa"]:checked'
-  ).id;
-  const formula = document.querySelector(
-    'input[name="izborFormule"]:checked'
-  ).id;
-  if (!validirajUnose(odabraniNacinUnosa)) {
-    alert("Molimo popunite sve potrebne podatke u validnom formatu.");
-    return;
-  }
-  let rez;
+  const odabranaMetoda = trenutnoOdabranaMetoda();
+  let rezultat;
   try {
-    if (stranica === "zadatak1_2.html") {
-      if (
-        odabraniNacinUnosa === "tastatura" ||
-        odabraniNacinUnosa === "datoteka"
-      ) {
-        numerickoDiferenciranjePodaci(
-          Number.parseInt(brojPodataka.value),
-          podaciX,
-          podaciFX,
-          formula
-        );
-      } else {
-        numerickoDiferenciranjeFunkcija(
-          parametri["prviDrugi"].funkcija.primjerFunkcije,
-          Number.parseInt(donjaGranica.value),
-          Number.parseInt(gornjaGranica.value),
-          Number.parseInt(brojPodjela.value),
-          formula
-        );
-      }
-    } else if (stranica === "zadatak3_4.html") {
-      if (
-        odabraniNacinUnosa === "tastatura" ||
-        odabraniNacinUnosa === "datoteka"
-      ) {
-        rez = numerickoIntegriranjePodaci(
-          Number.parseInt(brojPodataka.value),
-          podaciX,
-          podaciFX,
-          formula
-        );
-      } else {
-        rez = numerickoIntegriranjeFunkcija(
-          parametri["treciCetvrti"].funkcija.primjerFunkcije,
-          Number.parseInt(donjaGranica.value),
-          Number.parseInt(gornjaGranica.value),
-          Number.parseInt(brojPodjela.value),
-          formula
-        );
-      }
-    }
-    // rjesenje.innerHTML = `RJESENJE: ${rez}`;
+    postaviVrijednosti();
+    validirajUnose();
+    rezultat = metoda(odabranaMetoda);
+    rjesenje.innerHTML = `RJESENJE: ${rezultat}`;
   } catch (err) {
     greska.innerHTML = `GREŠKA: ${err.message}`;
   }
 };
 
-rijesiBtn.addEventListener("click", rijesi);
+rijesiBtn.addEventListener("click", rijesiSistem);
