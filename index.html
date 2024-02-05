@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="./index.html"
+              <a class="nav-link active" aria-current="page"
                 >Aplikacija za numeričko rješavanje sistema linearnih
                 algebarskih jednačina</a
               >
@@ -24,197 +24,135 @@
         </div>
       </div>
     </nav>
-    <div class="container mb-3 mt-3 w-25">
-      <h3 class="text-center">Numeričko diferenciranje</h3>
-      <form id="nacinUnosaForma">
-        <p>Način unosa podataka:</p>
-        <div class="mb-2">
-          <div class="form-check">
-            <input
-              type="radio"
-              class="form-check-input"
-              id="tastatura"
-              name="nacinUnosa"
-              autocomplete="off"
-            />
-            <label class="form-check-label" for="tastatura"
-              >Putem tastature</label
-            >
-          </div>
-          <div class="form-check">
-            <input
-              type="radio"
-              class="form-check-input"
-              id="datoteka"
-              name="nacinUnosa"
-              autocomplete="off"
-            />
-            <label class="form-check-label" for="datoteka"
-              >Čitanje iz datoteke</label
-            >
-          </div>
-          <div class="form-check">
-            <input
-              type="radio"
-              class="form-check-input"
-              id="funkcija"
-              name="nacinUnosa"
-              autocomplete="off"
-            />
-            <label class="form-check-label" for="funkcija">Unos funkcije</label>
-          </div>
-        </div>
-      </form>
-      <div class="form-check mt-2 mb-2" id="automatskoPopunjavanjeContainer">
+    <div class="container mb-3 mt-3 w-50">
+      <div id="nacinUnosaPodataka">
+        <label class="form-label">Način unosa podataka:</label>
+        <select class="form-select" id="nacinUnosaPodatakaSelect">
+          <option selected value="1">Ručno unesi jednačine</option>
+          <option value="2">Zalijepi vrijednosti</option>
+          <option value="3">Učitaj iz datoteke</option>
+          <option value="4">Koristi testne podatke</option>
+        </select>
+      </div>
+      <div id="odabirVrsteMetode">
+        <label class="form-label">Odabir vrste metode:</label>
+        <select class="form-select" id="odabirVrsteMetodeSelect">
+          <option selected value="1">Direktne</option>
+          <option value="2">Iterativne</option>
+        </select>
+      </div>
+      <div id="odabirDirektneMetode">
+        <label class="form-label">Odabir metode:</label>
+        <select class="form-select" id="odabirDirektneMetodeSelect">
+          <option selected value="1" data-name="gaussovaMetoda">
+            Gaussova metoda
+          </option>
+          <option value="2" data-name="gaussJordanovaMetoda">
+            Gauss-Jordanova metoda
+          </option>
+          <option value="3" data-name="matricnaMetoda">Matrična metoda</option>
+          <option value="4" data-name="metodaFaktorizacije">
+            Metoda faktorizacije
+          </option>
+        </select>
+      </div>
+      <div id="odabirIterativneMetode">
+        <label class="form-label">Odabir metode:</label>
+        <select class="form-select" id="odabirIterativneMetodeSelect">
+          <option selected value="1" data-name="jacobijevaMetoda">
+            Jacobijeva metoda
+          </option>
+          <option value="2" data-name="gaussSeidelovaMetoda">
+            Gauss-Seidelova metoda
+          </option>
+          <option value="3">Metoda relaksacije</option>
+        </select>
+      </div>
+      <div id="odabirMetodeRelaksacije">
+        <label class="form-label">Odabir metode relaksacije:</label>
+        <select class="form-select" id="odabirMetodeRelaksacijeSelect">
+          <option selected value="1" data-name="jacobijevaMetodaRelaksacije">
+            Jacobijeva metoda relaksacije
+          </option>
+          <option value="2" data-name="gaussSeidelovaMetodaRelaksacije">
+            Gauss-Seidelova metoda relaksacije
+          </option>
+        </select>
+      </div>
+      <div class="mb-3" id="brojJednacina">
+        <label for="brojJednacinaInput" class="form-label"
+          >Broj jednačina:</label
+        >
         <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="automatskoPopunjavanje"
+          type="number"
+          class="form-control"
+          id="brojJednacinaInput"
+          placeholder=""
         />
-        <label class="form-check-label" for="automatskoPopunjavanje">
-          Automatski popuni parametre (Testni podaci)
-        </label>
       </div>
-      <div id="unosTastatura">
-        <div id="brojPodatakaContainer">
-          <label for="brojPodataka" class="form-label">Broj podataka:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="brojPodataka"
-            placeholder=""
-          />
-        </div>
-        <div class="input-group mb-3 mt-3">
-          <input
-            type="text"
-            class="form-control"
-            placeholder=""
-            aria-label=""
-            aria-describedby="basic-addon1"
-            readonly
-            disabled
-            value="x"
-            id="x"
-          />
-          <input
-            type="text"
-            class="form-control"
-            placeholder=""
-            aria-label=""
-            aria-describedby="basic-addon1"
-            readonly
-            disabled
-            value="f(x)"
-            id="fx"
-          />
-        </div>
-        <div id="tabelaPodaci"></div>
+      <div id="jednacine"></div>
+      <div class="mb-3" id="matricaKoeficijenata">
+        <label for="matricaKoeficijenataInput" class="form-label"
+          >Unos matrice koeficijenata</label
+        >
+        <textarea
+          class="form-control"
+          id="matricaKoeficijenataInput"
+          rows="6"
+        ></textarea>
       </div>
-      <div id="citanjeDatoteke">
-        <div id="odabirDatotekeContainer">
-          <label for="odabirDatoteke" class="form-label">Datoteka:</label>
-          <input
-            type="file"
-            class="form-control"
-            id="odabirDatoteke"
-            placeholder=""
-          />
-        </div>
-        <div id="ucitanoPodatakaContainer">
-          <label for="ucitanoPodataka" class="form-label"
-            >Broj učitanih podataka:</label
-          >
-          <input
-            type="number"
-            class="form-control"
-            id="ucitanoPodataka"
-            placeholder=""
-            readonly
-            disabled
-          />
-        </div>
+      <div class="mb-3" id="vektorRjesenja">
+        <label for="vektorRjesenjaInput" class="form-label"
+          >Unos vektora rješenja</label
+        >
+        <textarea
+          class="form-control"
+          id="vektorRjesenjaInput"
+          rows="3"
+        ></textarea>
       </div>
-      <div id="unosFunkcija">
-        <div id="unosFunkcijeContainer">
-          <label for="unosFunkcije" class="form-label">Funkcija:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="unosFunkcije"
-            placeholder=""
-          />
-        </div>
-        <div id="donjaGranicaContainer">
-          <label for="donjaGranica" class="form-label">Donja granica:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="donjaGranica"
-            placeholder=""
-          />
-        </div>
-        <div id="gornjaGranicaContainer">
-          <label for="gornjaGranica" class="form-label">Gornja granica:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="gornjaGranica"
-            placeholder=""
-          />
-        </div>
-        <div id="brojPodjelaContainer">
-          <label for="brojPodjela" class="form-label">Broj podjela:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="brojPodjela"
-            placeholder=""
-          />
-        </div>
+      <div class="mb-3" id="odabirDatoteke">
+        <label for="odabirDatotekeInput" class="form-label">Datoteka:</label>
+        <input
+          type="file"
+          class="form-control"
+          id="odabirDatotekeInput"
+          placeholder=""
+        />
       </div>
-      <p>Izbor formule za diferenciranje:</p>
-      <div class="mb-2">
-        <div class="form-check">
-          <input
-            type="radio"
-            class="form-check-input"
-            id="unaprijed"
-            name="izborFormule"
-            autocomplete="off"
-          />
-          <label class="form-check-label" for="unaprijed"
-            >Diferenciranje unaprijed</label
-          >
-        </div>
-        <div class="form-check">
-          <input
-            type="radio"
-            class="form-check-input"
-            id="unazad"
-            name="izborFormule"
-            autocomplete="off"
-          />
-          <label class="form-check-label" for="unazad"
-            >Diferenciranje unazad</label
-          >
-        </div>
-        <div class="form-check">
-          <input
-            type="radio"
-            class="form-check-input"
-            id="centralno"
-            name="izborFormule"
-            autocomplete="off"
-          />
-          <label class="form-check-label" for="centralno"
-            >Centralno diferenciranje</label
-          >
-        </div>
+      <div class="mb-3" id="preciznost">
+        <label for="preciznostInput" class="form-label">Preciznost:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="preciznostInput"
+          placeholder=""
+          value="1e-6"
+        />
       </div>
-      <button type="button" class="btn btn-success w-100 mt-4" id="rijesi">
-        Riješi
+      <div class="mb-3" id="maxIteracija">
+        <label for="maxIteracijaInput" class="form-label"
+          >Maksimalan broj iteracija:</label
+        >
+        <input
+          type="number"
+          class="form-control"
+          id="maxIteracijaInput"
+          placeholder=""
+          value="100"
+        />
+      </div>
+      <div class="mb-3" id="relaksacija">
+        <label for="relaksacijaInput" class="form-label">Relaksacija:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="relaksacijaInput"
+          placeholder=""
+        />
+      </div>
+      <button type="button" class="btn btn-success w-100 mt-4" id="rijesiBtn">
+        Riješi sistem
       </button>
     </div>
     <h3 class="text-center" id="rjesenje"></h3>
