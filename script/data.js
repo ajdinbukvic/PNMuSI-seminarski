@@ -12,8 +12,8 @@ export const podaci = {
     brojJednacina: 3,
     matrica: [
       [3, 2, 105],
-      [3, 2, 105],
-      [3, 2, 105],
+      [2, -3, 103],
+      [1, 1, 3],
     ],
     vektor: [104, 98, 3],
   },

@@ -1,6 +1,7 @@
 import { podaci } from "./data.js";
 import { ispisRezultata, generisiHTML, generisiTabelu } from "./helper.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
+import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
 
 const matrica = [];
 const vektor = [];
@@ -406,7 +407,12 @@ const metoda = (odabranaMetoda) => {
       );
       break;
     case "gaussSeidelovaMetoda":
-      rezultati = 17;
+      rezultati = gaussSeidelovaMetoda(
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value
+      );
       break;
     case "jacobijevaMetodaRelaksacije":
       rezultati = 18;
