@@ -1,11 +1,5 @@
-import { podaci } from "./data.js";
-import {
-  ispisRezultata,
-  generisiHTML,
-  generisiTabelu,
-  generisiMatricu,
-  generisiVektor,
-} from "./helper.js";
+import { podaci, metode } from "./data.js";
+import { generisiInpute, generisiHTML } from "./helper.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
 import {
@@ -74,13 +68,9 @@ const relaksacija = document.getElementById("relaksacija");
 const relaksacijaInput = document.getElementById("relaksacijaInput");
 const jednacine = document.getElementById("jednacine");
 const rijesiBtn = document.getElementById("rijesiBtn");
-const tabela = document.getElementById("tabela");
-const matricaContainer = document.getElementById("matricaContainer");
-const tabelaMatrica = document.getElementById("matrica");
-const tabelaVektor = document.getElementById("vektor");
-const tabelaNepoznate = document.getElementById("nepoznate");
-const rjesenja = document.getElementById("rjesenja");
-const rjesenjaContainer = document.getElementById("rjesenjaContainer");
+const ukloniSveBtn = document.getElementById("ukloniSveBtn");
+const resetujSveBtn = document.getElementById("resetujSveBtn");
+const metodaContainer = document.getElementById("metodaContainer");
 const greska = document.getElementById("greska");
 const greskaContainer = document.getElementById("greskaContainer");
 
@@ -96,7 +86,6 @@ const greskaContainer = document.getElementById("greskaContainer");
   maxIteracija.style.display = "none";
   relaksacija.style.display = "none";
   greskaContainer.style.display = "none";
-  rjesenjaContainer.style.display = "none";
 })();
 
 // ODABIR NACINA UNOSA
@@ -194,20 +183,25 @@ const generisiJednacine = (e, br) => {
   let brPodataka;
   if (!e) brPodataka = br;
   else brPodataka = e.target.value;
-  jednacine.innerHTML = generisiHTML(brPodataka);
+  jednacine.innerHTML = generisiInpute(brPodataka);
 };
 
 brojJednacinaInput.addEventListener("input", generisiJednacine);
 
 // RESETOVANJE INPUTA
 
-const resetujInpute = () => {
-  jednacine.innerHTML = "";
-  brojJednacinaInput.value = "";
+const resetujInpute = (aktivno) => {
+  if (aktivno) {
+    preciznostInput.value = "";
+    maxIteracijaInput.value = "";
+    odabirDatotekeInput.value = null;
+  }
+  if (!aktivno || (aktivno && +nacinUnosaPodatakaSelect.value !== 4)) {
+    jednacine.innerHTML = "";
+    brojJednacinaInput.value = "";
+  }
   matricaKoeficijenataInput.value = "";
   vektorRjesenjaInput.value = "";
-  // preciznostInput.value = "";
-  // maxIteracijaInput.value = "";
   relaksacijaInput.value = "";
 };
 
@@ -395,24 +389,9 @@ const validirajUnose = () => {
   }
 };
 
-const generisiPodatke = () => {
-  tabelaMatrica.innerHTML = generisiMatricu(matrica, false);
-  tabelaVektor.innerHTML = generisiVektor(vektor, false, false);
-  tabelaNepoznate.innerHTML = generisiVektor(vektor, true, false);
-  if (matricaContainer.children.length === 4) {
-    const trenutniDiv = matricaContainer.children[2];
-    matricaContainer.removeChild(trenutniDiv);
-  }
-  const div = document.createElement("div");
-  div.textContent = "=";
-  div.style.marginRight = "10px";
-  const prethodniDiv = matricaContainer.children[2];
-  matricaContainer.insertBefore(div, prethodniDiv);
-};
-
 // POZIV ODABRANE METODE
 
-const metoda = (odabranaMetoda) => {
+const pozoviMetodu = (odabranaMetoda) => {
   let rezultati;
   switch (odabranaMetoda) {
     case "gaussovaMetoda":
@@ -462,10 +441,6 @@ const metoda = (odabranaMetoda) => {
       );
       break;
   }
-  if (rezultati[0].length > 1) {
-    generisiTabelu(tabela, rezultati);
-    return rezultati[rezultati.length - 1];
-  }
   return rezultati;
 };
 
@@ -473,21 +448,24 @@ const metoda = (odabranaMetoda) => {
 
 const rijesiSistem = () => {
   greska.innerHTML = "";
-  rjesenja.innerHTML = "";
   greskaContainer.style.display = "none";
-  rjesenjaContainer.style.display = "none";
-  tabela.innerHTML = "";
   const odabranaMetoda = trenutnoOdabranaMetoda();
+  const nazivMetode = metode[odabranaMetoda];
   try {
     postaviVrijednosti();
     validirajUnose();
-    generisiPodatke();
     const pocetak = performance.now();
-    const rezultati = metoda(odabranaMetoda);
+    const rezultati = pozoviMetodu(odabranaMetoda);
     const kraj = performance.now();
     const trajanje = Number.parseFloat(((kraj - pocetak) / 100).toFixed(6));
-    rjesenja.innerHTML = `${ispisRezultata(rezultati, trajanje)}`;
-    rjesenjaContainer.style.display = "block";
+    const html = generisiHTML(
+      nazivMetode,
+      matrica,
+      vektor,
+      rezultati,
+      trajanje
+    );
+    metodaContainer.insertAdjacentHTML("afterbegin", html);
   } catch (err) {
     greska.innerHTML = `${err.message}`;
     greskaContainer.style.display = "block";
@@ -495,3 +473,14 @@ const rijesiSistem = () => {
 };
 
 rijesiBtn.addEventListener("click", rijesiSistem);
+
+metodaContainer.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-outline-danger")) {
+    const najblizi = e.target.closest(".metoda");
+    if (najblizi) najblizi.remove();
+  }
+});
+
+ukloniSveBtn.addEventListener("click", () => (metodaContainer.innerHTML = ""));
+
+resetujSveBtn.addEventListener("click", () => resetujInpute(true));

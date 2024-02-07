@@ -1,4 +1,4 @@
-export const ispisRezultata = (rezultati, trajanje) => {
+const ispisRezultata = (rezultati, trajanje) => {
   let str = "";
   for (let i = 0; i < rezultati.length; i++) {
     str += `x${i + 1} = ${rezultati[i]}<br>`;
@@ -15,7 +15,7 @@ export const vrijemeIzvrsavanja = (metoda, ...args) => {
   return [trajanje, rezultati];
 };
 
-export const generisiHTML = (brPodataka) => {
+export const generisiInpute = (brPodataka) => {
   let html = "";
   let content = "";
   for (let i = 0; i < brPodataka; i++) {
@@ -59,8 +59,8 @@ export const generisiHTML = (brPodataka) => {
   return html;
 };
 
-export const generisiTabelu = (tabela, rezultati) => {
-  tabela.innerHTML = "";
+const generisiTabelu = (rezultati) => {
+  const tbody = document.createElement("tbody");
   const headingRow = document.createElement("tr");
   const thIndex = document.createElement("th");
   thIndex.textContent = "Iteracija";
@@ -71,7 +71,7 @@ export const generisiTabelu = (tabela, rezultati) => {
     th.style.border = "none";
     headingRow.appendChild(th);
   });
-  tabela.appendChild(headingRow);
+  tbody.appendChild(headingRow);
   rezultati.forEach((row, i) => {
     const tr = document.createElement("tr");
     const tdIndex = document.createElement("td");
@@ -84,35 +84,101 @@ export const generisiTabelu = (tabela, rezultati) => {
       td.style.border = "none";
       tr.appendChild(td);
     });
-    tabela.appendChild(tr);
+    tbody.appendChild(tr);
   });
+  return tbody.innerHTML;
 };
 
-export const generisiMatricu = (matrica, borderless) => {
-  var tableClass = borderless ? "borderless" : "";
-  var html = '<table class="' + tableClass + '">';
-
-  for (var i = 0; i < matrica.length; i++) {
+const generisiMatricu = (matrica, borderless) => {
+  const tableClass = borderless ? "borderless" : "";
+  let html = `<tbody class="${tableClass}">`;
+  for (let i = 0; i < matrica.length; i++) {
     html += "<tr>";
-    for (var j = 0; j < matrica[i].length; j++) {
-      html += "<td>" + matrica[i][j] + "</td>";
+    for (let j = 0; j < matrica[i].length; j++) {
+      html += `<td>${matrica[i][j]}</td>`;
     }
     html += "</tr>";
   }
-  html += "</table>";
+  html += "</tbody>";
   return html;
 };
 
-export const generisiVektor = (vektor, nepoznate, borderless) => {
-  var tableClass = borderless ? "borderless" : "";
-  var html = '<table class="' + tableClass + '">';
-
-  for (var i = 0; i < vektor.length; i++) {
+const generisiVektor = (vektor, nepoznate, borderless) => {
+  const tableClass = borderless ? "borderless" : "";
+  let html = `<tbody class="${tableClass}">`;
+  for (let i = 0; i < vektor.length; i++) {
     html += "<tr>";
-    if (nepoznate) html += "<td>" + "x" + (i + 1) + "</td>";
-    else html += "<td>" + vektor[i] + "</td>";
+    if (nepoznate) html += `<td>x${i + 1}</td>`;
+    else html += `<td>${vektor[i]}</td>`;
     html += "</tr>";
   }
-  html += "</table>";
+  html += "</tbody>";
+  return html;
+};
+
+export const generisiHTML = (
+  nazivMetode,
+  matrica,
+  vektor,
+  rezultati,
+  trajanje
+) => {
+  const html = `<div class="metoda">
+                  <div class="mt-3 d-flex">
+                    <h4
+                      class="text-center text-primary flex-grow-1"
+                      id="nazivMetode"
+                    >${nazivMetode}</h4>
+                    <button type="button" class="btn btn-outline-danger">Ukloni</button>
+                  </div>
+                  <div class="matricaRjesenjaContainer">
+                    <div class="matricaContainer" id="matricaContainer">
+                      <table class="matricaTabela">
+                        <tbody id="matrica">${generisiMatricu(
+                          matrica,
+                          false
+                        )}</tbody>
+                      </table>
+                      <table class="matricaTabela">
+                        <tbody id="nepoznate">${generisiVektor(
+                          vektor,
+                          true,
+                          false
+                        )}</tbody>
+                      </table>
+                      <div class="equals">=</div>
+                      <table class="matricaTabela">
+                        <tbody id="vektor">${generisiVektor(
+                          vektor,
+                          false,
+                          false
+                        )}</tbody>
+                      </table>
+                    </div>
+                    <div
+                      id="rjesenjaContainer"
+                      class="card text-white bg-primary mb-3 mt-3"
+                      style="max-width: 18rem"
+                    >
+                      <div class="card-header text-center">RJEŠENJA</div>
+                      <div class="card-body">
+                        <p class="card-text" id="rjesenja">${
+                          rezultati[0].length > 1
+                            ? ispisRezultata(
+                                rezultati[rezultati.length - 1],
+                                trajanje
+                              )
+                            : ispisRezultata(rezultati, trajanje)
+                        }</p>
+                      </div>
+                    </div>
+                  </div>
+                  <table class="table table-striped mb-3">
+                    <tbody class="mb-3" id="tabela">${
+                      rezultati[0].length > 1 ? generisiTabelu(rezultati) : ""
+                    }</tbody>
+                  </table>
+                  <hr>
+                </div>`;
   return html;
 };
