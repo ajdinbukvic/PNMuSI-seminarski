@@ -28,18 +28,13 @@ export const gaussSeidelovaMetoda = (
   return tabela;
 };
 
-export const izracunajRezultate = (
-  matrica,
-  vektor,
-  rezultati,
-  brojJednacina
-) => {
+const izracunajRezultate = (matrica, vektor, rezultati, brojJednacina) => {
   for (let i = 0; i < brojJednacina; i++) {
-    let suma = vektor[i];
+    let suma = 0;
     for (let j = 0; j < brojJednacina; j++) {
-      if (j !== i) suma -= matrica[i][j] * rezultati[j];
+      if (j !== i) suma += matrica[i][j] * rezultati[j];
     }
-    rezultati[i] = (1 / matrica[i][i]) * suma;
+    rezultati[i] = (vektor[i] - suma) / matrica[i][i];
   }
   return rezultati;
 };
