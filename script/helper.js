@@ -68,6 +68,7 @@ export const generisiTabelu = (tabela, rezultati) => {
   rezultati[0].forEach((cell, j) => {
     const th = document.createElement("th");
     th.textContent = `x${j + 1}`;
+    th.style.border = "none";
     headingRow.appendChild(th);
   });
   tabela.appendChild(headingRow);
@@ -75,12 +76,43 @@ export const generisiTabelu = (tabela, rezultati) => {
     const tr = document.createElement("tr");
     const tdIndex = document.createElement("td");
     tdIndex.textContent = i + 1;
+    tdIndex.style.border = "none";
     tr.appendChild(tdIndex);
     row.forEach((cell, j) => {
       const td = document.createElement("td");
       td.textContent = cell;
+      td.style.border = "none";
       tr.appendChild(td);
     });
     tabela.appendChild(tr);
   });
+};
+
+export const generisiMatricu = (matrica, borderless) => {
+  var tableClass = borderless ? "borderless" : "";
+  var html = '<table class="' + tableClass + '">';
+
+  for (var i = 0; i < matrica.length; i++) {
+    html += "<tr>";
+    for (var j = 0; j < matrica[i].length; j++) {
+      html += "<td>" + matrica[i][j] + "</td>";
+    }
+    html += "</tr>";
+  }
+  html += "</table>";
+  return html;
+};
+
+export const generisiVektor = (vektor, nepoznate, borderless) => {
+  var tableClass = borderless ? "borderless" : "";
+  var html = '<table class="' + tableClass + '">';
+
+  for (var i = 0; i < vektor.length; i++) {
+    html += "<tr>";
+    if (nepoznate) html += "<td>" + "x" + (i + 1) + "</td>";
+    else html += "<td>" + vektor[i] + "</td>";
+    html += "</tr>";
+  }
+  html += "</table>";
+  return html;
 };

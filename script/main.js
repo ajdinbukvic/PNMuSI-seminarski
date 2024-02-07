@@ -1,9 +1,10 @@
 import { podaci } from "./data.js";
 import {
   ispisRezultata,
-  vrijemeIzvrsavanja,
   generisiHTML,
   generisiTabelu,
+  generisiMatricu,
+  generisiVektor,
 } from "./helper.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
@@ -74,6 +75,10 @@ const relaksacijaInput = document.getElementById("relaksacijaInput");
 const jednacine = document.getElementById("jednacine");
 const rijesiBtn = document.getElementById("rijesiBtn");
 const tabela = document.getElementById("tabela");
+const matricaContainer = document.getElementById("matricaContainer");
+const tabelaMatrica = document.getElementById("matrica");
+const tabelaVektor = document.getElementById("vektor");
+const tabelaNepoznate = document.getElementById("nepoznate");
 const rjesenja = document.getElementById("rjesenja");
 const rjesenjaContainer = document.getElementById("rjesenjaContainer");
 const greska = document.getElementById("greska");
@@ -390,6 +395,21 @@ const validirajUnose = () => {
   }
 };
 
+const generisiPodatke = () => {
+  tabelaMatrica.innerHTML = generisiMatricu(matrica, false);
+  tabelaVektor.innerHTML = generisiVektor(vektor, false, false);
+  tabelaNepoznate.innerHTML = generisiVektor(vektor, true, false);
+  if (matricaContainer.children.length === 4) {
+    const trenutniDiv = matricaContainer.children[2];
+    matricaContainer.removeChild(trenutniDiv);
+  }
+  const div = document.createElement("div");
+  div.textContent = "=";
+  div.style.marginRight = "10px";
+  const prethodniDiv = matricaContainer.children[2];
+  matricaContainer.insertBefore(div, prethodniDiv);
+};
+
 // POZIV ODABRANE METODE
 
 const metoda = (odabranaMetoda) => {
@@ -461,6 +481,7 @@ const rijesiSistem = () => {
   try {
     postaviVrijednosti();
     validirajUnose();
+    generisiPodatke();
     const pocetak = performance.now();
     const rezultati = metoda(odabranaMetoda);
     const kraj = performance.now();
