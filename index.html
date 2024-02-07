@@ -4,24 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PNMuSI - Seminarski</title>
+    <link rel="stylesheet" href="./style.css" />
     <link
       rel="stylesheet"
       href="../bootstrap-5.3.2-dist/css/bootstrap.min.css"
     />
-    <style>
-      html,
-      body {
-        height: 50vh;
-      }
-      .container {
-        min-height: 50vh;
-        display: flex;
-        flex-direction: column;
-      }
-      main {
-        flex: 1;
-      }
-    </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -42,7 +29,9 @@
       <main class="mb-auto">
         <div class="container mb-3 mt-3 w-75">
           <div id="nacinUnosaPodataka">
-            <label class="form-label">Način unosa podataka:</label>
+            <label for="nacinUnosaPodatakaSelect" class="form-label"
+              >Način unosa podataka:</label
+            >
             <select class="form-select" id="nacinUnosaPodatakaSelect">
               <option selected value="1">Ručno unesi jednačine</option>
               <option value="2">Zalijepi vrijednosti</option>
@@ -51,14 +40,18 @@
             </select>
           </div>
           <div id="odabirVrsteMetode">
-            <label class="form-label">Odabir vrste metode:</label>
+            <label for="odabirVrsteMetodeSelect" class="form-label"
+              >Odabir vrste metode:</label
+            >
             <select class="form-select" id="odabirVrsteMetodeSelect">
               <option selected value="1">Direktne</option>
               <option value="2">Iterativne</option>
             </select>
           </div>
           <div id="odabirDirektneMetode">
-            <label class="form-label">Odabir metode:</label>
+            <label for="odabirDirektneMetodeSelect" class="form-label"
+              >Odabir metode:</label
+            >
             <select class="form-select" id="odabirDirektneMetodeSelect">
               <option selected value="1" data-name="gaussovaMetoda">
                 Gaussova metoda
@@ -75,7 +68,9 @@
             </select>
           </div>
           <div id="odabirIterativneMetode">
-            <label class="form-label">Odabir metode:</label>
+            <label for="odabirIterativneMetodeSelect" class="form-label"
+              >Odabir metode:</label
+            >
             <select class="form-select" id="odabirIterativneMetodeSelect">
               <option selected value="1" data-name="jacobijevaMetoda">
                 Jacobijeva metoda
@@ -87,7 +82,9 @@
             </select>
           </div>
           <div id="odabirMetodeRelaksacije">
-            <label class="form-label">Odabir metode relaksacije:</label>
+            <label for="odabirMetodeRelaksacijeSelect" class="form-label"
+              >Odabir metode relaksacije:</label
+            >
             <select class="form-select" id="odabirMetodeRelaksacijeSelect">
               <option
                 selected
@@ -177,22 +174,20 @@
               placeholder=""
             />
           </div>
-          <button
-            type="button"
-            class="btn btn-success w-100 mt-4"
-            id="rijesiBtn"
-          >
-            Riješi sistem
-          </button>
-          <div
-            id="rjesenjaContainer"
-            class="card text-white bg-primary mb-3 mt-3 mx-auto"
-            style="max-width: 18rem"
-          >
-            <div class="card-header text-center">RJEŠENJA</div>
-            <div class="card-body">
-              <p class="card-text" id="rjesenja"></p>
-            </div>
+          <div class="d-flex gap-5 mt-4">
+            <button type="button" class="btn btn-light" id="resetujSveBtn">
+              Resetuj sve
+            </button>
+            <button
+              type="button"
+              class="btn btn-success flex-grow-1"
+              id="rijesiBtn"
+            >
+              Riješi sistem
+            </button>
+            <button type="button" class="btn btn-danger" id="ukloniSveBtn">
+              Ukloni sve
+            </button>
           </div>
           <div
             id="greskaContainer"
@@ -204,9 +199,7 @@
               <p class="card-text text-center" id="greska"></p>
             </div>
           </div>
-          <table class="table table-striped mb-3">
-            <tbody class="mb-3" id="tabela"></tbody>
-          </table>
+          <div id="metodaContainer"></div>
         </div>
       </main>
     </div>

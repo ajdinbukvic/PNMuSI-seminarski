@@ -84,3 +84,14 @@ export const podaci = {
     relaksacija: 1.1,
   },
 };
+
+export const metode = {
+  gaussovaMetoda: "Gaussova metoda",
+  gaussJordanovaMetoda: "Gauss-Jordanova metoda",
+  matricnaMetoda: "Matrična metoda",
+  metodaFaktorizacije: "Metoda faktorizacije",
+  jacobijevaMetoda: "Jacobijeva metoda",
+  gaussSeidelovaMetoda: "Gauss-Seidelova metoda",
+  jacobijevaMetodaRelaksacije: "Jacobijeva metoda relaksacije",
+  gaussSeidelovaMetodaRelaksacije: "Gauss-Seidelova metoda relaksacije",
+};

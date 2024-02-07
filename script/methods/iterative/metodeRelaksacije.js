@@ -21,6 +21,7 @@ export const jacobijevaMetodaRelaksacije = (
     const greska = izracunajGresku(rezultati, noviRezultati, brojJednacina);
     if (greska < preciznost) break;
     rezultati = [...noviRezultati];
+    trenutnaIteracija++;
   }
   if (trenutnaIteracija === maxIteracija)
     throw new Error("Premašen je maksimalni broj iteracija.");
@@ -49,6 +50,7 @@ export const gaussSeidelovaMetodaRelaksacije = (
     );
     if (maxGreska < preciznost) break;
     rezultati = [...noviRezultati];
+    trenutnaIteracija++;
   }
   if (trenutnaIteracija === maxIteracija)
     throw new Error("Premašen je maksimalni broj iteracija.");

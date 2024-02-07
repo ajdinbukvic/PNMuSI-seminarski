@@ -1,0 +1,50 @@
+html,
+body {
+  height: 50vh;
+}
+.container {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex: 1;
+}
+.matricaTabela,
+.matricaRjesenjaContainer,
+.matricaContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.matricaRjesenjaContainer {
+  gap: 5rem;
+}
+.matricaContainer {
+  height: 100%;
+  float: left;
+}
+.matricaTabela tbody {
+  border-collapse: collapse;
+  margin-top: 20px;
+  float: left;
+  margin-right: 10px;
+}
+.matricaTabela tbody td {
+  padding: 8px;
+}
+.matricaTabela tbody td:first-child {
+  border-left: 1px solid black;
+}
+.matricaTabela tbody td:last-child {
+  border-right: 1px solid black;
+}
+.equals-sign {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  float: left;
+}
+.equals {
+  margin-right: 10px;
+}
