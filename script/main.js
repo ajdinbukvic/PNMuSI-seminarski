@@ -1,7 +1,16 @@
 import { podaci } from "./data.js";
-import { ispisRezultata, generisiHTML, generisiTabelu } from "./helper.js";
+import {
+  ispisRezultata,
+  vrijemeIzvrsavanja,
+  generisiHTML,
+  generisiTabelu,
+} from "./helper.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
+import {
+  jacobijevaMetodaRelaksacije,
+  gaussSeidelovaMetodaRelaksacije,
+} from "./methods/iterative/metodeRelaksacije.js";
 
 const matrica = [];
 const vektor = [];
@@ -415,10 +424,22 @@ const metoda = (odabranaMetoda) => {
       );
       break;
     case "jacobijevaMetodaRelaksacije":
-      rezultati = 18;
+      rezultati = jacobijevaMetodaRelaksacije(
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value,
+        +relaksacijaInput.value
+      );
       break;
     case "gaussSeidelovaMetodaRelaksacije":
-      rezultati = 19;
+      rezultati = gaussSeidelovaMetodaRelaksacije(
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value,
+        +relaksacijaInput.value
+      );
       break;
   }
   if (rezultati[0].length > 1) {
@@ -437,12 +458,14 @@ const rijesiSistem = () => {
   rjesenjaContainer.style.display = "none";
   tabela.innerHTML = "";
   const odabranaMetoda = trenutnoOdabranaMetoda();
-  let rezultati;
   try {
     postaviVrijednosti();
     validirajUnose();
-    rezultati = metoda(odabranaMetoda);
-    rjesenja.innerHTML = `${ispisRezultata(rezultati)}`;
+    const pocetak = performance.now();
+    const rezultati = metoda(odabranaMetoda);
+    const kraj = performance.now();
+    const trajanje = Number.parseFloat(((kraj - pocetak) / 100).toFixed(6));
+    rjesenja.innerHTML = `${ispisRezultata(rezultati, trajanje)}`;
     rjesenjaContainer.style.display = "block";
   } catch (err) {
     greska.innerHTML = `${err.message}`;

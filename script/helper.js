@@ -1,9 +1,18 @@
-export const ispisRezultata = (rezultati) => {
+export const ispisRezultata = (rezultati, trajanje) => {
   let str = "";
   for (let i = 0; i < rezultati.length; i++) {
     str += `x${i + 1} = ${rezultati[i]}<br>`;
   }
+  str += `<br>Vrijeme izvršavanja: ${trajanje}s.<br>`;
   return str;
+};
+
+export const vrijemeIzvrsavanja = (metoda, ...args) => {
+  const pocetak = performance.now();
+  const rezultati = metoda(...args);
+  const kraj = performance.now();
+  const trajanje = kraj - pocetak;
+  return [trajanje, rezultati];
 };
 
 export const generisiHTML = (brPodataka) => {

@@ -28,12 +28,7 @@ export const jacobijevaMetoda = (matrica, vektor, preciznost, maxIteracija) => {
   return tabela;
 };
 
-export const izracunajRezultate = (
-  matrica,
-  vektor,
-  rezultati,
-  brojJednacina
-) => {
+const izracunajRezultate = (matrica, vektor, rezultati, brojJednacina) => {
   const noviRezultati = [];
   for (let i = 0; i < brojJednacina; i++) {
     let suma = 0;
