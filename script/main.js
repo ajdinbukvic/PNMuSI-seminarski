@@ -1,5 +1,6 @@
 import { podaci, metode } from "./data.js";
 import { generisiInpute, generisiHTML } from "./helper.js";
+import { spremiCSV } from "./export.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
 import {
@@ -475,12 +476,49 @@ const rijesiSistem = () => {
 rijesiBtn.addEventListener("click", rijesiSistem);
 
 metodaContainer.addEventListener("click", (e) => {
+  const najblizi = e.target.closest(".metoda");
   if (e.target.classList.contains("btn-outline-danger")) {
-    const najblizi = e.target.closest(".metoda");
     if (najblizi) najblizi.remove();
+  }
+  if (e.target.classList.contains("spremiPDF")) {
+    if (najblizi) spremiPDF(najblizi);
+  }
+  if (e.target.classList.contains("spremiCSV")) {
+    const tabela = najblizi.querySelector(".tabelaContainer");
+    if (tabela) spremiCSV(tabela, "data.csv");
   }
 });
 
 ukloniSveBtn.addEventListener("click", () => (metodaContainer.innerHTML = ""));
 
 resetujSveBtn.addEventListener("click", () => resetujInpute(true));
+
+const spremiPDF = (element) => {
+  const elementKopija = element.cloneNode(true);
+  const ukloniBtn = elementKopija.querySelector(".btn-outline-danger");
+  const spremiPDF = elementKopija.querySelector(".spremiPDF");
+  const spremiCSV = elementKopija.querySelector(".spremiCSV");
+  ukloniBtn.remove();
+  spremiPDF.remove();
+  if (spremiCSV) spremiCSV.remove();
+  const header = elementKopija.querySelector(".naslovContainer");
+  if (preciznost.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Preciznost: ${preciznostInput.value}</div>`
+    );
+  }
+  if (maxIteracija.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Maksimalni broj iteracija: ${maxIteracijaInput.value}</div>`
+    );
+  }
+  if (relaksacija.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Relaksacija: ${relaksacijaInput.value}</div>`
+    );
+  }
+  html2pdf(elementKopija);
+};
