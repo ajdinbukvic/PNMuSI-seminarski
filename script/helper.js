@@ -177,13 +177,9 @@ export const generisiHTML = (
                     <button type="button" class="btn btn-outline-success spremiPDF">
                         Spremi PDF
                     </button>
-                    ${
-                      rezultati[0].length > 1
-                        ? `<button type="button" class="btn btn-outline-success spremiCSV">
+                        <button type="button" class="btn btn-outline-success spremiCSV">
                         Spremi CSV
-                    </button>`
-                        : ""
-                    }
+                    </button>
                   </div>
                   <table class="table table-striped mb-3 tabelaContainer">
                     <tbody class="mb-3" id="tabela">${

@@ -14,6 +14,7 @@ import {
 
 const matrica = [];
 const vektor = [];
+let rezultati = [];
 
 // DROPDOWNS
 
@@ -274,10 +275,21 @@ const ucitajPodatke = (e) => {
     reader.onload = (event) => {
       const csv = event.target.result;
       const lines = csv.trim().split("\n");
+      const lineTable = lines.findIndex((line) =>
+        line.trim().startsWith("Iteracija")
+      );
+      const linesLength = lineTable !== -1 ? lineTable : lines.length;
       lines.forEach((line) => {
         const values = line.split(",");
-        const rowData = values.slice(0, -1).map(parseFloat);
-        const lastValue = parseFloat(values[values.length - 1]);
+        const newValues = values.slice(0, linesLength + 1);
+        // if (lines.length !== values.length - 1)
+        //   throw new Error("Podaci u datoteci nisu u NxN formatu.");
+        newValues.forEach((value) => {
+          if (isNaN(parseFloat(value)))
+            throw new Error("Podaci u datoteci nisu numerički.");
+        });
+        const rowData = newValues.slice(0, -1).map(parseFloat);
+        const lastValue = parseFloat(newValues[newValues.length - 1]);
         matrica.push(rowData);
         vektor.push(lastValue);
       });
@@ -401,24 +413,21 @@ const pozoviMetodu = (odabranaMetoda) => {
   switch (odabranaMetoda) {
     case "gaussovaMetoda":
       rezultati = gaussMetoda(
-        matrica,
-        vektor
+        matrica.map((red) => [...red]),
+        [...vektor]
       );
       break;
     case "gaussJordanovaMetoda":
       rezultati = gaussJordanovaMetoda(
-        matrica,
-        vektor
+        matrica.map((red) => [...red]),
+        [...vektor]
       );
       break;
     case "matricnaMetoda":
-      rezultati = matricnaMetoda(
-        matrica,
-        vektor
-      );
+      rezultati = matricnaMetoda(matrica, vektor);
       break;
     case "metodaFaktorizacije":
-      rezultati = metodaFaktorizacije(matrica,vektor);
+      rezultati = metodaFaktorizacije(matrica, vektor);
       break;
     case "jacobijevaMetoda":
       rezultati = jacobijevaMetoda(
@@ -468,8 +477,9 @@ const rijesiSistem = () => {
   try {
     postaviVrijednosti();
     validirajUnose();
+    rezultati.length = 0;
     const pocetak = performance.now();
-    const rezultati = pozoviMetodu(odabranaMetoda);
+    rezultati = pozoviMetodu(odabranaMetoda);
     const kraj = performance.now();
     const trajanje = Number.parseFloat(((kraj - pocetak) / 1000).toFixed(6));
     const html = generisiHTML(
@@ -509,7 +519,7 @@ metodaContainer.addEventListener("click", (e) => {
   }
   if (e.target.classList.contains("spremiCSV")) {
     const tabela = najblizi.querySelector(".tabelaContainer");
-    if (tabela) spremiCSV(tabela, "data.csv");
+    spremiCSV(matrica, vektor, rezultati, "data.csv", tabela);
   }
 });
 

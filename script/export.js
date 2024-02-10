@@ -3,6 +3,18 @@ import {
   jacobijevaMetodaRelaksacije,
 } from "./methods/iterative/metodeRelaksacije.js";
 
+const generisiCSV = (matrica, vektor, rezultati) => {
+  let csv = "";
+  const zadnjiRezultati =
+    rezultati[0].length > 1 ? rezultati[rezultati.length - 1] : rezultati;
+  for (let i = 0; i < matrica.length; i++) {
+    csv += matrica[i].join(",") + ",";
+    csv += vektor[i] + ",";
+    csv += zadnjiRezultati[i] + "\n";
+  }
+  return csv;
+};
+
 const konvertujTabelu = (tabela) => {
   const csv = [];
   const redovi = tabela.querySelectorAll("tr");
@@ -17,8 +29,9 @@ const konvertujTabelu = (tabela) => {
   return csv.join("\n");
 };
 
-export const spremiCSV = (tabela, nazivFajla) => {
-  const csv = konvertujTabelu(tabela);
+export const spremiCSV = (matrica, vektor, rezultati, nazivFajla, tabela) => {
+  let csv = generisiCSV(matrica, vektor, rezultati);
+  if (tabela) csv += konvertujTabelu(tabela);
   const csvFile = new Blob([csv], { type: "text/csv" });
   const downloadLink = document.createElement("a");
   downloadLink.download = nazivFajla;
