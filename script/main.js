@@ -1,6 +1,6 @@
 import { podaci, metode } from "./data.js";
 import { generisiInpute, generisiHTML } from "./helper.js";
-import { spremiCSV } from "./export.js";
+import { spremiCSV, optimizacijaRelaksacije } from "./export.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
 import {
@@ -458,7 +458,7 @@ const rijesiSistem = () => {
     const pocetak = performance.now();
     const rezultati = pozoviMetodu(odabranaMetoda);
     const kraj = performance.now();
-    const trajanje = Number.parseFloat(((kraj - pocetak) / 100).toFixed(6));
+    const trajanje = Number.parseFloat(((kraj - pocetak) / 1000).toFixed(6));
     const html = generisiHTML(
       nazivMetode,
       matrica,
@@ -467,6 +467,17 @@ const rijesiSistem = () => {
       trajanje
     );
     metodaContainer.insertAdjacentHTML("afterbegin", html);
+    if (
+      odabranaMetoda === "jacobijevaMetodaRelaksacije" ||
+      odabranaMetoda === "gaussSeidelovaMetodaRelaksacije"
+    )
+      optimizacijaRelaksacije(
+        odabranaMetoda,
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value
+      );
   } catch (err) {
     greska.innerHTML = `${err.message}`;
     greskaContainer.style.display = "block";
@@ -489,9 +500,13 @@ metodaContainer.addEventListener("click", (e) => {
   }
 });
 
+// BRISANJE REZULTATA I RESETOVANJE INPUTA
+
 ukloniSveBtn.addEventListener("click", () => (metodaContainer.innerHTML = ""));
 
 resetujSveBtn.addEventListener("click", () => resetujInpute(true));
+
+// SPREMANJE REZULTATA U PDF
 
 const spremiPDF = (element) => {
   const elementKopija = element.cloneNode(true);
@@ -520,5 +535,9 @@ const spremiPDF = (element) => {
       `<div>Relaksacija: ${relaksacijaInput.value}</div>`
     );
   }
+  // html2pdf()
+  //   .from(elementKopija)
+  //   .set({ scale: 0.5, html2canvas: { scale: 0.9 } })
+  //   .save();
   html2pdf(elementKopija);
 };

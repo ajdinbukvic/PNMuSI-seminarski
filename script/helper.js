@@ -190,6 +190,12 @@ export const generisiHTML = (
                       rezultati[0].length > 1 ? generisiTabelu(rezultati) : ""
                     }</tbody>
                   </table>
+                  ${
+                    nazivMetode === "Jacobijeva metoda relaksacije" ||
+                    nazivMetode === "Gauss-Seidelova metoda relaksacije"
+                      ? `<div id="plot"></div>`
+                      : ""
+                  }
                   <hr>
                 </div>`;
   return html;
