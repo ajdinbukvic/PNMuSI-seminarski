@@ -1,6 +1,10 @@
 import { podaci, metode } from "./data.js";
 import { generisiInpute, generisiHTML } from "./helper.js";
 import { spremiCSV, optimizacijaRelaksacije } from "./export.js";
+import { gaussMetoda } from "./methods/direct/gaussovaMetoda.js";
+import { gaussJordanovaMetoda } from "./methods/direct/gaussJordanovaMetoda.js";
+import { matricnaMetoda } from "./methods/direct/matricnaMetoda.js";
+import { metodaFaktorizacije } from "./methods/direct/metodaFaktorizacije.js";
 import { jacobijevaMetoda } from "./methods/iterative/jacobijevaMetoda.js";
 import { gaussSeidelovaMetoda } from "./methods/iterative/gaussSeidelovaMetoda.js";
 import {
@@ -396,16 +400,25 @@ const pozoviMetodu = (odabranaMetoda) => {
   let rezultati;
   switch (odabranaMetoda) {
     case "gaussovaMetoda":
-      rezultati = 12;
+      rezultati = gaussMetoda(
+        matrica,
+        vektor
+      );
       break;
     case "gaussJordanovaMetoda":
-      rezultati = 13;
+      rezultati = gaussJordanovaMetoda(
+        matrica,
+        vektor
+      );
       break;
     case "matricnaMetoda":
-      rezultati = 14;
+      rezultati = matricnaMetoda(
+        matrica,
+        vektor
+      );
       break;
     case "metodaFaktorizacije":
-      rezultati = 15;
+      rezultati = metodaFaktorizacije(matrica,vektor);
       break;
     case "jacobijevaMetoda":
       rezultati = jacobijevaMetoda(
