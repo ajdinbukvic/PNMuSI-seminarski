@@ -124,7 +124,7 @@ export const generisiHTML = (
   trajanje
 ) => {
   const html = `<div class="metoda">
-                  <div class="mt-3 d-flex">
+                  <div class="mt-3 d-flex naslovContainer">
                     <h4
                       class="text-center text-primary flex-grow-1"
                       id="nazivMetode"
@@ -173,11 +173,29 @@ export const generisiHTML = (
                       </div>
                     </div>
                   </div>
-                  <table class="table table-striped mb-3">
+                  <div class="d-flex justify-content-center gap-5 mb-3">
+                    <button type="button" class="btn btn-outline-success spremiPDF">
+                        Spremi PDF
+                    </button>
+                    ${
+                      rezultati[0].length > 1
+                        ? `<button type="button" class="btn btn-outline-success spremiCSV">
+                        Spremi CSV
+                    </button>`
+                        : ""
+                    }
+                  </div>
+                  <table class="table table-striped mb-3 tabelaContainer">
                     <tbody class="mb-3" id="tabela">${
                       rezultati[0].length > 1 ? generisiTabelu(rezultati) : ""
                     }</tbody>
                   </table>
+                  ${
+                    nazivMetode === "Jacobijeva metoda relaksacije" ||
+                    nazivMetode === "Gauss-Seidelova metoda relaksacije"
+                      ? `<div id="plot"></div>`
+                      : ""
+                  }
                   <hr>
                 </div>`;
   return html;

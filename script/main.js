@@ -1,5 +1,6 @@
 import { podaci, metode } from "./data.js";
 import { generisiInpute, generisiHTML } from "./helper.js";
+import { spremiCSV, optimizacijaRelaksacije } from "./export.js";
 import { gaussMetoda } from "./methods/direct/gaussovaMetoda.js";
 import { gaussJordanovaMetoda } from "./methods/direct/gaussJordanovaMetoda.js";
 import { matricnaMetoda } from "./methods/direct/matricnaMetoda.js";
@@ -470,7 +471,7 @@ const rijesiSistem = () => {
     const pocetak = performance.now();
     const rezultati = pozoviMetodu(odabranaMetoda);
     const kraj = performance.now();
-    const trajanje = Number.parseFloat(((kraj - pocetak) / 100).toFixed(6));
+    const trajanje = Number.parseFloat(((kraj - pocetak) / 1000).toFixed(6));
     const html = generisiHTML(
       nazivMetode,
       matrica,
@@ -479,6 +480,17 @@ const rijesiSistem = () => {
       trajanje
     );
     metodaContainer.insertAdjacentHTML("afterbegin", html);
+    if (
+      odabranaMetoda === "jacobijevaMetodaRelaksacije" ||
+      odabranaMetoda === "gaussSeidelovaMetodaRelaksacije"
+    )
+      optimizacijaRelaksacije(
+        odabranaMetoda,
+        matrica,
+        vektor,
+        +preciznostInput.value,
+        +maxIteracijaInput.value
+      );
   } catch (err) {
     greska.innerHTML = `${err.message}`;
     greskaContainer.style.display = "block";
@@ -488,12 +500,57 @@ const rijesiSistem = () => {
 rijesiBtn.addEventListener("click", rijesiSistem);
 
 metodaContainer.addEventListener("click", (e) => {
+  const najblizi = e.target.closest(".metoda");
   if (e.target.classList.contains("btn-outline-danger")) {
-    const najblizi = e.target.closest(".metoda");
     if (najblizi) najblizi.remove();
   }
+  if (e.target.classList.contains("spremiPDF")) {
+    if (najblizi) spremiPDF(najblizi);
+  }
+  if (e.target.classList.contains("spremiCSV")) {
+    const tabela = najblizi.querySelector(".tabelaContainer");
+    if (tabela) spremiCSV(tabela, "data.csv");
+  }
 });
+
+// BRISANJE REZULTATA I RESETOVANJE INPUTA
 
 ukloniSveBtn.addEventListener("click", () => (metodaContainer.innerHTML = ""));
 
 resetujSveBtn.addEventListener("click", () => resetujInpute(true));
+
+// SPREMANJE REZULTATA U PDF
+
+const spremiPDF = (element) => {
+  const elementKopija = element.cloneNode(true);
+  const ukloniBtn = elementKopija.querySelector(".btn-outline-danger");
+  const spremiPDF = elementKopija.querySelector(".spremiPDF");
+  const spremiCSV = elementKopija.querySelector(".spremiCSV");
+  ukloniBtn.remove();
+  spremiPDF.remove();
+  if (spremiCSV) spremiCSV.remove();
+  const header = elementKopija.querySelector(".naslovContainer");
+  if (preciznost.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Preciznost: ${preciznostInput.value}</div>`
+    );
+  }
+  if (maxIteracija.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Maksimalni broj iteracija: ${maxIteracijaInput.value}</div>`
+    );
+  }
+  if (relaksacija.style.display === "block") {
+    header.insertAdjacentHTML(
+      "afterend",
+      `<div>Relaksacija: ${relaksacijaInput.value}</div>`
+    );
+  }
+  // html2pdf()
+  //   .from(elementKopija)
+  //   .set({ scale: 0.5, html2canvas: { scale: 0.9 } })
+  //   .save();
+  html2pdf(elementKopija);
+};
